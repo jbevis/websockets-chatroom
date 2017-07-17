@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      #alias { border: 0.5px solid #F0F0F0; padding: 10px; width: 90%; margin-right: .5%; }
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #set-alias { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+    </style>
+  </head>
+  <body>
+    <div id='users'>users online: 0</div>
+    <ul id="messages"></ul>
+    <input id="alias" autocomplete="off" placeholder="set alias"/><button id='set-alias'>set</button>
+    <form action="">
+      <input id="m" autocomplete="off" /><button>Send</button>
+    </form>
+    <div id='chat'></div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+      $(function () {
+        const socket = io();
+        
+        $('#set-alias').on('click', function() {
+          let name = $('#alias').val();
+          
+          $('#chat').html(name);
+        });
+        
+        $('form').submit(function(e){
+          e.preventDefault();
+          let nickname = $('#chat').html();
+          let message = $('#m').val();
+
+          nickname === "" ? nickname = 'Anonymous User' :
+          
+          socket.emit('chat message', { message: message, nickname: nickname });
+          $('#messages').append($('<li>').text(`${nickname}: ${message}`));
+          $('#m').val('');
+          return false;
+        });
+        
+        socket.on('chat message', function(post){
+          const { message, nickname } = post;
+          $('#messages').append($('<li>').text(`${nickname}: ${message}`));
+        });
+        
+        socket.on('user disconnect', function(){
+          $('#messages').append($('<li>').text('someone disconnected'));
+        });
+        
+        socket.on('user connection', function(){
+          $('#messages').append($('<li>').text('someone connected'));
+        });
+        
+        socket.on('user count', function(num){
+          $('#users').html(`users online ${num}`);
+        });
+        
+      });
+    </script>
+  </body>
+</html>
+</html>
