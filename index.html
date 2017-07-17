@@ -29,6 +29,18 @@
       $(function () {
         const socket = io();
         
+        socket.on('user connection', function(){
+          $('#messages').append($('<li>').text('someone connected'));
+        });
+        
+        socket.on('user disconnect', function(){
+          $('#messages').append($('<li>').text('someone disconnected'));
+        });
+        
+        socket.on('user count', function(num){
+          $('#users').html(`users online ${num}`);
+        });
+        
         $('#set-alias').on('click', function() {
           let name = $('#alias').val();
           
@@ -53,17 +65,6 @@
           $('#messages').append($('<li>').text(`${nickname}: ${message}`));
         });
         
-        socket.on('user disconnect', function(){
-          $('#messages').append($('<li>').text('someone disconnected'));
-        });
-        
-        socket.on('user connection', function(){
-          $('#messages').append($('<li>').text('someone connected'));
-        });
-        
-        socket.on('user count', function(num){
-          $('#users').html(`users online ${num}`);
-        });
         
       });
     </script>
