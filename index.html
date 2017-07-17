@@ -15,14 +15,16 @@
       #messages li:nth-child(odd) { background: #eee; }
     </style>
   </head>
+  
   <body>
-    <div id='users'>users online: 0</div>
+    <section id='users'>users online: 0</section>
     <ul id="messages"></ul>
     <input id="alias" autocomplete="off" placeholder="set alias"/><button id='set-alias'>set</button>
     <form action="">
       <input id="m" autocomplete="off" /><button>Send</button>
     </form>
-    <div id='chat'></div>
+    <section id='chat'></section>
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
@@ -64,7 +66,6 @@
           const { message, nickname } = post;
           $('#messages').append($('<li>').text(`${nickname}: ${message}`));
         });
-        
         
       });
     </script>
